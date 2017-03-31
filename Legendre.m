@@ -1,17 +1,19 @@
 classdef Legendre
-    %Legendre polynomials
-    %   Detailed explanation goes here
+    %Legendre Class for Legendre polynomials
+    %   Contains basic methods for constructing Legendre polynomials using
+    %   Legendre-Gauss-Lobatto quadrature, finding nodes, weigths, and
+    %   forward/backward transforms.
     
     properties
         N
         tol
         x
         w
-        L
-        dL
-        d2L
-        d3L
-        d4L
+        P
+        dP
+        d2P
+        d3P
+        d4P
         norm2
     end
     
@@ -21,27 +23,27 @@ classdef Legendre
             obj.tol=tol;
             obj.x=zeros(N+1,1);
             obj.w=zeros(N+1,1);
-            obj.L=zeros(N+1);
-            obj.dL=zeros(N+1);
-            obj.d2L=zeros(N+1);
-            obj.d3L=zeros(N+1);
-            obj.d4L=zeros(N+1);
+            obj.P=zeros(N+1);
+            obj.dP=zeros(N+1);
+            obj.d2P=zeros(N+1);
+            obj.d3P=zeros(N+1);
+            obj.d4P=zeros(N+1);
             obj.norm2=zeros(N+1,1);
             obj.x(1)=-1; 
             obj.x(N+1)=1;
             obj.w(1)=2/(N*(N+1)*dm_Leg_n(N,0,-1)^2); 
             obj.w(N+1)=2/(N*(N+1)*dm_Leg_n(N,0,1)^2);
             for k=0:N
-                obj.L(k+1,1)=dm_Leg_n(k,0,-1);
-                obj.dL(k+1,1)=dm_Leg_n(k,1,-1);
-                obj.d2L(k+1,1)=dm_Leg_n(k,2,-1);
-                obj.d3L(k+1,1)=dm_Leg_n(k,3,-1);
-                obj.d4L(k+1,1)=dm_Leg_n(k,4,-1);
-                obj.L(k+1,N+1)=dm_Leg_n(k,0,1);
-                obj.dL(k+1,N+1)=dm_Leg_n(k,1,1);
-                obj.d2L(k+1,N+1)=dm_Leg_n(k,2,1);
-                obj.d3L(k+1,N+1)=dm_Leg_n(k,3,1);
-                obj.d4L(k+1,N+1)=dm_Leg_n(k,4,1);
+                obj.P(k+1,1)=dm_Leg_n(k,0,-1);
+                obj.dP(k+1,1)=dm_Leg_n(k,1,-1);
+                obj.d2P(k+1,1)=dm_Leg_n(k,2,-1);
+                obj.d3P(k+1,1)=dm_Leg_n(k,3,-1);
+                obj.d4P(k+1,1)=dm_Leg_n(k,4,-1);
+                obj.P(k+1,N+1)=dm_Leg_n(k,0,1);
+                obj.dP(k+1,N+1)=dm_Leg_n(k,1,1);
+                obj.d2P(k+1,N+1)=dm_Leg_n(k,2,1);
+                obj.d3P(k+1,N+1)=dm_Leg_n(k,3,1);
+                obj.d4P(k+1,N+1)=dm_Leg_n(k,4,1);
                 obj.norm2(k+1)=2/(2*k+1);
             end
             for j=1:N-1
@@ -62,42 +64,42 @@ classdef Legendre
                 obj.x(j+1)=z;
                 obj.w(j+1)=2/(N*(N+1)*dm_Leg_n(N,0,z)^2);
                 for k=0:N
-                    obj.L(k+1,j+1)=dm_Leg_n(k,0,z);
-                    obj.dL(k+1,j+1)=dm_Leg_n(k,1,z);
-                    obj.d2L(k+1,j+1)=dm_Leg_n(k,2,z);
-                    obj.d3L(k+1,j+1)=dm_Leg_n(k,3,z);
-                    obj.d4L(k+1,j+1)=dm_Leg_n(k,4,z);
+                    obj.P(k+1,j+1)=dm_Leg_n(k,0,z);
+                    obj.dP(k+1,j+1)=dm_Leg_n(k,1,z);
+                    obj.d2P(k+1,j+1)=dm_Leg_n(k,2,z);
+                    obj.d3P(k+1,j+1)=dm_Leg_n(k,3,z);
+                    obj.d4P(k+1,j+1)=dm_Leg_n(k,4,z);
                 end
             end
         end
         
-        function v = FLegT( obj, u )
-            v=((0:obj.N)'+0.5).*(obj.L*((obj.w).*u));
+        function v = FT( obj, u )
+            v=((0:obj.N)'+0.5).*(obj.P*((obj.w).*u));
             v(obj.N+1)=obj.N/(2*obj.N+1)*v(obj.N+1);
         end
 
-        function [u,du,d2u,d3u,d4u] = BLegT( obj, v )
+        function [u,du,d2u,d3u,d4u] = BT( obj, v )
             switch nargout
                 case 1
-                    u=obj.L'*v;
+                    u=obj.P'*v;
                 case 2
-                    u=obj.L'*v;
-                    du=obj.dL'*v;
+                    u=obj.P'*v;
+                    du=obj.dP'*v;
                 case 3
-                    u=obj.L'*v;
-                    du=obj.dL'*v;
-                    d3u=obj.d3L'*v;
+                    u=obj.P'*v;
+                    du=obj.dP'*v;
+                    d3u=obj.d3P'*v;
                 case 4
-                    u=obj.L'*v;
-                    du=obj.dL'*v;
-                    d2u=obj.d2L'*v;
-                    d3u=obj.d3L'*v;
+                    u=obj.P'*v;
+                    du=obj.dP'*v;
+                    d2u=obj.d2P'*v;
+                    d3u=obj.d3P'*v;
                 case 5
-                    u=obj.L'*v;
-                    du=obj.dL'*v;
-                    d2u=obj.d2L'*v;
-                    d3u=obj.d3L'*v;
-                    d4u=obj.d4L'*v;
+                    u=obj.P'*v;
+                    du=obj.dP'*v;
+                    d2u=obj.d2P'*v;
+                    d3u=obj.d3P'*v;
+                    d4u=obj.d4P'*v;
             end
         end
         
