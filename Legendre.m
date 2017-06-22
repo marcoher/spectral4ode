@@ -46,6 +46,7 @@ classdef Legendre
                 obj.d4P(k+1,N+1)=dm_Leg_n(k,4,1);
                 obj.norm2(k+1)=2/(2*k+1);
             end
+            %obj.norm2(N+1)=2/N;
             for j=1:N-1
                 theta1=(4*j-1)*pi/(4*N+2);
                 theta2=(4*(j+1)-1)*pi/(4*N+2);
