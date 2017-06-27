@@ -5,23 +5,24 @@ classdef Chebyshev
     %   forward/backward transforms.
     
     properties
-        N
-        tol
-        x
-        w
-        P
-        dP
-        d2P
-        d3P
-        d4P
-        norm2
+        N       % Max degree [10]
+        x       % LGL Nodes x_0,...,x_N: (N+1)x1
+        w       % Weigths w_0,...,w_N: (N+1)x1
+        P       % Polynomial values P_i(x_j): (N+1)x(N+1)
+        dP      % Polynomial values P_i'(x_j): (N+1)x(N+1)
+        d2P     % Polynomial values P_i''(x_j): (N+1)x(N+1)
+        d3P     % Polynomial values P_i'''(x_j): (N+1)x(N+1)
+        d4P     % Polynomial values P_i''''(x_j): (N+1)x(N+1)
+        norm2   % L^2 norm of P_i: (N+1)x1
     end
     
     methods
-        function obj=Chebyshev(N,tol)
-            obj.N = N;
-            obj.tol = tol;
-            
+        function obj=Chebyshev(N)
+            if nargin==0
+                N=10;
+            end
+            obj.N=N;
+                     
             obj.x = cos(pi*(N:-1:0)'/N);
             
             obj.w = ones(N+1,1)*pi/2;
@@ -45,13 +46,13 @@ classdef Chebyshev
         end
         
         function v = FT( obj, u )
-            %v=((0:obj.N)'+0.5).*(obj.P*((obj.w).*u));
-            %v(obj.N+1)=obj.N/(2*obj.N+1)*v(obj.N+1);
+            % Forward transform
             vv = ifft([u(obj.N+1:-1:1);u(2:obj.N)]);
             v = [vv(1); 2*vv(2:obj.N); vv(obj.N+1)];
         end
 
         function [u,du,d2u,d3u,d4u] = BT( obj, v )
+            % Backward transform ... should speed up with fft?
             switch nargout
                 case 1
                     u=obj.P'*v;
@@ -87,9 +88,8 @@ function [T, dT, d2T, d3T, d4T] = Cheb( n, x )
         if j==0
             s(1,j+1)=1;
             s(2,j+1)=x;
-            for k=1:n-1 %k=1:n-1
-               s(k+2,j+1)=2*x*s(k+1,j+1)-s(k,j+1);%((2*k+1)*x*s(k+1,j+1)-k*s(k,j+1))/(k+1);
-               %s(k+1,j+1) = chebyshevT(k,x); 
+            for k=1:n-1
+               s(k+2,j+1)=2*x*s(k+1,j+1)-s(k,j+1); 
             end
         else
             s(1,j+1)=0;
@@ -99,7 +99,6 @@ function [T, dT, d2T, d3T, d4T] = Cheb( n, x )
                 s(2,j+1)=0;
             end
             for k=1:n-1
-                %s(k+2,j+1)=(2*k+1)*s(k+1,j)+s(k,j+1);
                 s(k+2,j+1) = 2*x*s(k+1,j+1)+2*j*s(k+1,j)-s(k,j+1);
             end
         end

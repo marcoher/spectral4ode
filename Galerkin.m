@@ -6,9 +6,9 @@ classdef Galerkin
     %   basis of orthogonal polynomials must be set a priori.
     
     properties
-        pol     % Basis of orthogonal polynomials
+        pol     % Basis of orthogonal polynomials (Legendre or Chebyshev)
         neq     % Number of equations
-        ord     % Order of each equation
+        ord     % Order of each equation (either 4 or 2)
         coeff   % Coefficients in the Galerkin decomposition
         opRhs   % Differential operator of order 4 or 2
         opLhs   % Differential operator of order 2 or 0
@@ -370,10 +370,6 @@ classdef Galerkin
                         du{i}=obj.sc*( v(n+1:n+Ni(i)).'*dphi ).';
                         d2u{i}=obj.sc^2*( v(n+1:n+Ni(i)).'*d2phi ).';
                         d3u{i}=obj.sc^3*( v(n+1:n+Ni(i)).'*d3phi ).';
-                        %u{i}=( v(n+1:n+Ni(i)).'*phi ).';
-                        %du{i}=( v(n+1:n+Ni(i)).'*dphi ).';
-                        %d2u{i}=( v(n+1:n+Ni(i)).'*d2phi ).';
-                        %d3u{i}=( v(n+1:n+Ni(i)).'*d3phi ).';
                         n=n+Ni(i);
                     end
             end
@@ -517,11 +513,7 @@ classdef Galerkin
                I=I+sum(abs(uu).^2.*obj.pol.norm2);
             end
             I=sqrt(I);
-            %{
-            I=cellfun(@(z) sum( abs(z).^2.*obj.pol.w )/obj.sc, u,'UniformOutput',false);
-            I=cell2mat(I);
-            I=sqrt(sum(I(:)));
-            %}
+            
         end
     end
     
