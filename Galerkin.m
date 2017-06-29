@@ -419,23 +419,24 @@ classdef Galerkin
         end
         
         function h = plot_as_flat( obj, u, p_vals, m, flag )
-        %plot_as_flat plots Re ( u(x) e^{i m t} )
-        % assumes x is vertical, t is horizontal, t in p_vals interval
-           [pp,zz]=meshgrid(p_vals,obj.x_fun(obj.pol.x));
-           uu=zeros(size(pp));
-           per=p_vals(end);
+        %plot_as_flat plots Re ( sum_j u_j(x) e^{i m_j p} )
+        % assumes x is vertical, p is horizontal, p in p_vals interval
+           
+           [pp, zz] = meshgrid(p_vals, obj.x_fun(obj.pol.x));
+           uu = zeros(size(pp));
+           per = p_vals(end);
            if strcmp(flag,'real')
                for j=1:length(p_vals)
-                   uu(:,j)=real(u)*cos(2*pi*m/per*p_vals(j))-imag(u)*sin(2*pi*m/per*p_vals(j));
+                   uu(:,j) = real(u)*cos(2*pi*m/per*p_vals(j))-imag(u)*sin(2*pi*m/per*p_vals(j));
                end
            elseif strcmp(flag,'imag')
                for j=1:length(p_vals)
-                   uu(:,j)=real(u)*sin(2*pi*m/per*p_vals(j))+imag(u)*cos(2*pi*m/per*p_vals(j));
+                   uu(:,j) = real(u)*sin(2*pi*m/per*p_vals(j))+imag(u)*cos(2*pi*m/per*p_vals(j));
                end
            else
-               error('Last argument must be real or imag.');
+               error('Last argument must be ''real'' or ''imag''.');
            end
-           h=contourf(pp,zz,uu);
+           h = contourf(pp,zz,uu);
         end
         
         function h = surf_as_flat( obj, u, p_vals, m, flag )
