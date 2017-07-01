@@ -230,7 +230,7 @@ classdef TransitionUtils
                         
         end
         
-        function [lambda_2_c, m_c_] = neutral_stability_curves(initializer, pol, m_, param, lambda_1_name, lambda_1_,...  
+        function [lambda_2_c_, m_c_] = neutral_stability_curves(initializer, pol, m_, param, lambda_1_name, lambda_1_,...  
                                                lambda_2_name, lambda_2_l, lambda_2_r, ...
                                                MaxIter, lambdaTol, betaTol)
             if ~exist('MaxIter', 'var')
@@ -262,7 +262,16 @@ classdef TransitionUtils
             ylabel(lambda_2_name);
             legend(legendInfo);
             
-            [lambda_2_c, m_c_] = min(lambda_2_c, [], 1);
+            lambda_2_c_ = zeros(size(lambda_1_));
+            m_c_ = zeros(size(lambda_1_));
+            
+            for i=1:numel(lambda_1_)
+                [val, idx] = min(lambda_2_c(:,i));
+                m_c_(i) = m_(idx);
+                lambda_2_c_(i) = val;
+            end
+                        
+            plot(lambda_1_, lambda_2_c_, 'o')
             
         end
     end
