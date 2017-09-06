@@ -34,9 +34,7 @@ bc_r{1}{1} = @(u, du, d2u, d3u) u;
 bc_r{1}{2} = @(u, du, d2u, d3u) du;
 bc_r{2}{1} = @(v, dv) v;
 
-x_fun = @(x) (x+1)/2;
-
-gal = Galerkin(pol, bc_l, bc_r, rhs, lhs, x_fun);
+gal = Galerkin(pol, bc_l, bc_r, rhs, lhs, 0, 1);
 
 % The bilinear part
 bilin=@(m1,m2,x, u,du,d2u,d3u, v,dv,d2v,d3v)...
