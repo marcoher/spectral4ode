@@ -1,4 +1,5 @@
-# spectral4ode
+# spectral4ptd
+
 Spectral Legendre-Galerkin methods for second to fourth order PDE on a rectangular domain with one periodic dimension.
 
 These codes are meant to automate the calculation of neutral stability curves, transition types, and bifucarted solutions. The choice of the type of domain allows us to use a one dimensional spectral method, which makes the execution sufficiently fast to be applied to parametrized equations, i.e. systems where the eigenvalues, eigenfunctions, and bifurcation numbers need to be computed for a large family of different parameter values.
